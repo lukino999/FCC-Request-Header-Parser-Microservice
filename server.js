@@ -5,6 +5,12 @@
 var express = require('express');
 var app = express();
 
+app.use((req, res, next) => {
+  console.log(`${new Date().toString()}:=> ${req.originalUrl}, ${req.body}`);
+  next();
+})
+
+
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC 
 var cors = require('cors');
@@ -24,6 +30,20 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: 'hello API' });
 });
 
+// /api/whoami
+app.get('/api/whoami', (req, res) => {
+  console.log(req);
+
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const language = req.headers['accept-language'];
+  const userAgent = req.headers['user-agent'];
+
+  res.json({
+    ipaddress: ip,
+    language: language,
+    software: userAgent
+  });
+})
 
 
 // listen for requests :)
